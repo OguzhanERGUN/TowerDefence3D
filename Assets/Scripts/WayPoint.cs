@@ -7,7 +7,7 @@ public class WayPoint : MonoBehaviour
     [SerializeField] bool isPlaceable;
 
 
-    [SerializeField] GameObject towerPrefab;
+    [SerializeField] Tower towerPrefab;
     public bool IsPlaceable { get { return isPlaceable; } }
 
 
@@ -16,8 +16,10 @@ public class WayPoint : MonoBehaviour
     {
         if (isPlaceable)
         {
-            Instantiate(towerPrefab,transform.position,towerPrefab.transform.rotation);
-            isPlaceable = false;
+            bool isPlaced = towerPrefab.CreateTower(towerPrefab, transform.position);
+            
+            isPlaceable = !isPlaced;
         }
     }
+    
 }
