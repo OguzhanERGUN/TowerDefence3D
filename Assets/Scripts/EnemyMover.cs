@@ -5,22 +5,24 @@ using UnityEngine;
 using UnityEngine.PlayerLoop;
 using static UnityEditor.Progress;
 
+
+[RequireComponent(typeof(Enemy))]
 public class EnemyMover : MonoBehaviour
 {
     [SerializeField] List<WayPoint> path = new List<WayPoint>();
-    [SerializeField] [Range(0f,5f)]float speedEnemy ;
+    [SerializeField][Range(0f, 5f)] float speedEnemy;
 
     private Enemy enemy;
-    
-    
-    
+
+
+
     private void Start()
     {
-        enemy = GetComponent<Enemy>();    
+        enemy = GetComponent<Enemy>();
     }
-    
-    
-    
+
+
+
     void OnEnable()
     {
         FindPath();
@@ -31,11 +33,17 @@ public class EnemyMover : MonoBehaviour
     {
         path.Clear();
 
-        GameObject[] waypoints = GameObject.FindGameObjectsWithTag("Path");
+        GameObject parent = GameObject.FindGameObjectWithTag("Path");
 
-        foreach (GameObject waypoint in waypoints)
+        foreach (Transform child in parent.transform)
         {
-            path.Add(waypoint.GetComponent<WayPoint>());
+            WayPoint point = child.GetComponent<WayPoint>();
+
+            if (point != null)
+            {
+                path.Add(child.GetComponent<WayPoint>());
+
+            }
         }
     }
 
@@ -43,6 +51,13 @@ public class EnemyMover : MonoBehaviour
     {
         transform.position = path[0].transform.position;
     }
+
+    private void FinishPath()
+    {
+        enemy.StealGold();
+        gameObject.SetActive(false);
+    }
+
     IEnumerator FollowPath()
     {
         foreach (WayPoint item in path)
@@ -52,16 +67,15 @@ public class EnemyMover : MonoBehaviour
             float travelPercent = 0f;
 
             transform.LookAt(endPosition);
-            while(travelPercent < 1f)
+            while (travelPercent < 1f)
             {
                 travelPercent += Time.deltaTime * speedEnemy;
-                transform.position = Vector3.Lerp(startPosition, endPosition,travelPercent);
+                transform.position = Vector3.Lerp(startPosition, endPosition, travelPercent);
                 yield return new WaitForEndOfFrame();
             }
         }
-        enemy.StealGold();
 
-        gameObject.SetActive(false);
+        FinishPath();
     }
 
 
