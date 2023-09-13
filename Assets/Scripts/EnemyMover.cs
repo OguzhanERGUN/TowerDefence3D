@@ -9,7 +9,7 @@ using static UnityEditor.Progress;
 [RequireComponent(typeof(Enemy))]
 public class EnemyMover : MonoBehaviour
 {
-    [SerializeField] List<WayPoint> path = new List<WayPoint>();
+    [SerializeField] List<Tile> path = new List<Tile>();
     [SerializeField][Range(0f, 5f)] float speedEnemy;
 
     private Enemy enemy;
@@ -37,11 +37,11 @@ public class EnemyMover : MonoBehaviour
 
         foreach (Transform child in parent.transform)
         {
-            WayPoint point = child.GetComponent<WayPoint>();
+            Tile point = child.GetComponent<Tile>();
 
             if (point != null)
             {
-                path.Add(child.GetComponent<WayPoint>());
+                path.Add(child.GetComponent<Tile>());
 
             }
         }
@@ -60,7 +60,7 @@ public class EnemyMover : MonoBehaviour
 
     IEnumerator FollowPath()
     {
-        foreach (WayPoint item in path)
+        foreach (Tile item in path)
         {
             Vector3 startPosition = transform.position;
             Vector3 endPosition = item.transform.position;
